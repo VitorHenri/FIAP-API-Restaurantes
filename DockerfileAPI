@@ -1,0 +1,19 @@
+FROM openjdk:17-jdk-slim
+
+# Instalar utilitários necessários (sem sudo)
+RUN apt-get update && apt-get install -y maven && apt-get clean
+
+# Define o diretório de trabalho dentro do container
+WORKDIR /restauranteAPI
+
+# Copia o projeto para dentro do container
+COPY restaurante /restauranteAPI
+
+# Compila o projeto com Maven (gera o .jar)
+RUN mvn clean package -DskipTests
+
+# Expõe a porta da aplicação (ajuste conforme sua config)
+EXPOSE 8080
+
+# Define o comando para rodar a aplicação
+CMD ["java", "-jar", "target/restaurante-0.0.1-SNAPSHOT.jar"]
