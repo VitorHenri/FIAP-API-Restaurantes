@@ -16,6 +16,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -45,6 +47,9 @@ public class Usuario implements UserDetails{
 	private String senha;
 	private LocalDateTime dataUltimaAlteracao;
 	private boolean isAdmin;
+	@ManyToOne
+	@JoinColumn(name = "tipo_usuario_id")
+	private TipoUsuario tipoUsuario;
 	
 	@OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL)
 	private List<Endereco> endereco;

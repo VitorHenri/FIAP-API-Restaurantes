@@ -19,8 +19,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fiap.api.restaurante.dtos.TokenData;
 import com.fiap.api.restaurante.dtos.UsuarioDTO;
+import com.fiap.api.restaurante.entities.TipoUsuario;
 import com.fiap.api.restaurante.entities.Usuario;
 import com.fiap.api.restaurante.repositories.UsuarioRepository;
+import com.fiap.api.restaurante.services.TipoUsuarioService;
 import com.fiap.api.restaurante.utils.TokenGenerator;
 
 @RestController
@@ -30,6 +32,8 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	@Autowired
+	private TipoUsuarioService tipoUsuarioService;
+	@Autowired
 	private AuthenticationManager authManager;
 	@Autowired
 	private TokenGenerator tokenGenerator;
@@ -37,6 +41,8 @@ public class UsuarioController {
 	@PostMapping("/cadastro")
 	public ResponseEntity<Void> cadastroUsuario(@RequestBody UsuarioDTO dadosUsuario, UriComponentsBuilder uriBuilder) {
 		Usuario user = new Usuario(dadosUsuario);
+		TipoUsuario tipousuario = tipoUsuarioService.buscarEntidadePorId(dadosUsuario.tipoUsuarioId());
+		user.setTipoUsuario(tipousuario);
 		user = usuarioRepository.save(user);
 		URI uri = URI.create(uriBuilder.path("/usuario/{id}").build(user.getId()).toString());
 		return ResponseEntity.created(uri).build();
@@ -59,6 +65,8 @@ public class UsuarioController {
 		Usuario user = usuarioRepository.findById(id).orElse(null);
 		if (user != null && (autenticado.getId() == user.getId() || autenticado.isAdmin())) {
 			user.atualizarUsuario(dadosUsuario);
+			TipoUsuario tipousuario = tipoUsuarioService.buscarEntidadePorId(dadosUsuario.tipoUsuarioId());
+			user.setTipoUsuario(tipousuario);
 			usuarioRepository.save(user);
 			return ResponseEntity.noContent().build();
 		}
