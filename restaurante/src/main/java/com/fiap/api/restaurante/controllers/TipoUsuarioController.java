@@ -3,6 +3,7 @@ package com.fiap.api.restaurante.controllers;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.fiap.api.restaurante.dtos.TipoUsuarioDTO;
@@ -23,8 +24,12 @@ public class TipoUsuarioController {
     }
 
     @GetMapping("/{id}")
-    public TipoUsuarioDTO buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id);
+    public ResponseEntity<Object> buscarPorId(@PathVariable Long id) {
+    	try{
+    		return ResponseEntity.ok(service.buscarPorId(id));
+    	}catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
     }
 
     @PostMapping
@@ -34,13 +39,22 @@ public class TipoUsuarioController {
     }
 
     @PutMapping("/{id}")
-    public TipoUsuarioDTO atualizar(@PathVariable Long id, @RequestBody TipoUsuarioDTO dto) {
-        return service.atualizar(id, dto);
+    public ResponseEntity<Object> atualizar(@PathVariable Long id, @RequestBody TipoUsuarioDTO dto) {
+    	try{
+    		return ResponseEntity.ok(service.atualizar(id, dto));
+    	}catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
     }
-
+    
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletar(@PathVariable Long id) {
-        service.deletar(id);
+    public ResponseEntity<String> deletar(@PathVariable Long id) {
+    	try{
+    		service.deletar(id);
+    		return ResponseEntity.noContent().build();
+    	}catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
     }
 }

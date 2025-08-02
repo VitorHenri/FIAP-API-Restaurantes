@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.ForeignKey;
 
 @Table
 @Entity
@@ -48,7 +49,7 @@ public class Usuario implements UserDetails{
 	private LocalDateTime dataUltimaAlteracao;
 	private boolean isAdmin;
 	@ManyToOne
-	@JoinColumn(name = "tipo_usuario_id")
+	@JoinColumn(name = "tipo_usuario_id", foreignKey = @ForeignKey(name = "fk_usuario_tipo_usuario"))
 	private TipoUsuario tipoUsuario;
 	
 	@OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL)

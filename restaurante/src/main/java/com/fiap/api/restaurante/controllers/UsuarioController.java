@@ -39,10 +39,16 @@ public class UsuarioController {
 	private TokenGenerator tokenGenerator;
 
 	@PostMapping("/cadastro")
-	public ResponseEntity<Void> cadastroUsuario(@RequestBody UsuarioDTO dadosUsuario, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<Object> cadastroUsuario(@RequestBody UsuarioDTO dadosUsuario, UriComponentsBuilder uriBuilder) {
 		Usuario user = new Usuario(dadosUsuario);
-		TipoUsuario tipousuario = tipoUsuarioService.buscarEntidadePorId(dadosUsuario.tipoUsuarioId());
-		user.setTipoUsuario(tipousuario);
+		if(dadosUsuario.tipoUsuarioId()!=null) {
+			try {
+				TipoUsuario tipousuario = tipoUsuarioService.buscarEntidadePorId(dadosUsuario.tipoUsuarioId());
+				user.setTipoUsuario(tipousuario);
+			}catch (Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
 		user = usuarioRepository.save(user);
 		URI uri = URI.create(uriBuilder.path("/usuario/{id}").build(user.getId()).toString());
 		return ResponseEntity.created(uri).build();
@@ -65,8 +71,14 @@ public class UsuarioController {
 		Usuario user = usuarioRepository.findById(id).orElse(null);
 		if (user != null && (autenticado.getId() == user.getId() || autenticado.isAdmin())) {
 			user.atualizarUsuario(dadosUsuario);
-			TipoUsuario tipousuario = tipoUsuarioService.buscarEntidadePorId(dadosUsuario.tipoUsuarioId());
-			user.setTipoUsuario(tipousuario);
+			if(dadosUsuario.tipoUsuarioId()!=null) {
+				try {
+					TipoUsuario tipousuario = tipoUsuarioService.buscarEntidadePorId(dadosUsuario.tipoUsuarioId());
+					user.setTipoUsuario(tipousuario);
+				}catch (Exception e) {
+					return ResponseEntity.badRequest().body(e.getMessage());
+				}
+			}
 			usuarioRepository.save(user);
 			return ResponseEntity.noContent().build();
 		}
