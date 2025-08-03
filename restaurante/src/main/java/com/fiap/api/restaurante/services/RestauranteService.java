@@ -104,30 +104,32 @@ public class RestauranteService {
         
         Usuario dono = null;
         
-        if(dto.usuarioId()>0) {
-	        dono = usuarioRepository.findById(dto.usuarioId())
-	            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário dono não encontrado"));
+        if(dto.usuarioId() > 0) {
+            dono = usuarioRepository.findById(dto.usuarioId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário dono não encontrado"));
         }
-
-        if(dto.endereco()!= null) {
-        	Endereco enderecoAtualizado = null;
-        	if(restaurante.getEndereco()!= null && restaurante.getEndereco().getId()>0) {
-        		enderecoAtualizado = enderecoRepository.findById(restaurante.getEndereco().getId())
-        			    .orElse(new Endereco(dto.endereco(), dono));
-
-        	}
-        	 enderecoAtualizado.atualizarEndereco(dto.endereco(), dono);
-             restaurante.setEndereco(enderecoAtualizado);
+        
+        if(dto.endereco() != null) {
+            Endereco enderecoAtualizado;
+            if(restaurante.getEndereco() != null && restaurante.getEndereco().getId() > 0) {
+                enderecoAtualizado = enderecoRepository.findById(restaurante.getEndereco().getId())
+                    .orElse(new Endereco(dto.endereco(), dono));
+            } else {
+                enderecoAtualizado = new Endereco(dto.endereco(), dono);
+            }
+            enderecoAtualizado.atualizarEndereco(dto.endereco(), dono);
+            enderecoAtualizado = enderecoRepository.save(enderecoAtualizado);  // salvar explicitamente o endereço
+            restaurante.setEndereco(enderecoAtualizado);
         }
-       
-        if(dto.nome()!= null)
-        	restaurante.setNome(dto.nome());
-        if(dto.tipoCozinha()!= null)
-        	restaurante.setTipoCozinha(dto.tipoCozinha());
-        if(dto.horarioFuncionamento()!= null)
-        	restaurante.setHorarioFuncionamento(dto.horarioFuncionamento());
+        
+        if(dto.nome() != null)
+            restaurante.setNome(dto.nome());
+        if(dto.tipoCozinha() != null)
+            restaurante.setTipoCozinha(dto.tipoCozinha());
+        if(dto.horarioFuncionamento() != null)
+            restaurante.setHorarioFuncionamento(dto.horarioFuncionamento());
         if(dono != null)
-        	restaurante.setDono(dono);
+            restaurante.setDono(dono);
         
         Restaurante atualizado = restauranteRepository.save(restaurante);
 
@@ -138,15 +140,16 @@ public class RestauranteService {
             atualizado.getHorarioFuncionamento(),
             atualizado.getDono().getNome(),
             new EnderecoDTO(
-            		atualizado.getEndereco().getLogradouro(),
-            		atualizado.getEndereco().getNumero(),
-            		atualizado.getEndereco().getBairro(),
-            		atualizado.getEndereco().getComplemento(),
-            		atualizado.getEndereco().getCep(),
-            		atualizado.getEndereco().getCidade(),
-            		atualizado.getEndereco().getEstado()
-            	)
+                atualizado.getEndereco().getLogradouro(),
+                atualizado.getEndereco().getNumero(),
+                atualizado.getEndereco().getBairro(),
+                atualizado.getEndereco().getComplemento(),
+                atualizado.getEndereco().getCep(),
+                atualizado.getEndereco().getCidade(),
+                atualizado.getEndereco().getEstado()
+            )
         );
     }
+
 
 }
