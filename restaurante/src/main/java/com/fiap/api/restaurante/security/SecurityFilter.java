@@ -25,9 +25,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityFilter extends OncePerRequestFilter {
 	
 	@Autowired
-	private TokenGenerator tokenGenerator;
+	public TokenGenerator tokenGenerator;
 	@Autowired
-	private UsuarioRepository userRepository;
+	public UsuarioRepository userRepository;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
