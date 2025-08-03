@@ -18,7 +18,7 @@ import com.fiap.api.restaurante.dtos.RestauranteDTO;
 import com.fiap.api.restaurante.dtos.RestauranteResponseDTO;
 import com.fiap.api.restaurante.services.RestauranteService;
 
-public class RestauranteControllerTest {
+class RestauranteControllerTest {
 
     @InjectMocks
     private RestauranteController controller;
