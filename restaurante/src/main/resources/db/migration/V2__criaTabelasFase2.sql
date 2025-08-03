@@ -7,24 +7,34 @@ alter table usuario
 add column tipo_usuario_id int,
 add foreign key (tipo_usuario_id) references tipo_usuario(id);
 
-create table restaurante (
-    id serial primary key,
-    nome varchar(150) not null,
-    tipo_cozinha varchar(100),
-    horario_funcionamento varchar(100),
-    usuario_id int not null,
-    endereco_id int,
-    foreign key (usuario_id) references usuario(id),
-    foreign key (endereco_id) references endereco(id)
+CREATE TABLE restaurante (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(150) NOT NULL,
+    tipo_cozinha VARCHAR(100),
+    horario_funcionamento VARCHAR(100),
+    usuario_id INT NOT NULL,
+    endereco_id INT,
+
+    CONSTRAINT fk_restaurante_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuario(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_restaurante_endereco
+        FOREIGN KEY (endereco_id)
+        REFERENCES endereco(id)
+        ON DELETE SET NULL
 );
 
-create table item_cardapio (
-    id serial primary key,
-    nome varchar(150) not null,
-    descricao text,
-    preco numeric(10,2) not null,
-    apenas_local boolean default false,
-    caminho_foto varchar(255),
-    restaurante_id int not null,
-    foreign key (restaurante_id) references restaurante(id) on delete cascade
+CREATE TABLE item_cardapio (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    descricao VARCHAR(1000),
+    preco NUMERIC(10, 2) NOT NULL,
+    disponivel_somente_no_local BOOLEAN NOT NULL,
+    caminho_foto VARCHAR(500),
+    restaurante_id BIGINT NOT NULL,
+    CONSTRAINT fk_item_restaurante FOREIGN KEY (restaurante_id) REFERENCES restaurante(id)
 );
+
+
